@@ -22,3 +22,13 @@ class snake(object):
 
     def addCube(self):
         pass
+
+class cube(object):
+    def __init__(self, color):
+        pass
+
+    def move(self):
+        pass
+
+    def draw(self):
+        pass
