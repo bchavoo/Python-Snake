@@ -10,6 +10,7 @@
 
 '''
 import pygame
+import random
 
 class snake(object):
     body = []
@@ -80,7 +81,7 @@ class snake(object):
         pass
 
     def draw(self, surface):
-        for i,cube in enumerate(self.body):
+        for i, cube in enumerate(self.body):
             #If it is the first cube of the snake, draw eyes (True), otherwise it is the body
             if i == 0:
                 cube.draw(surface, True)
@@ -133,14 +134,27 @@ def drawGrid(width, rows, surface):
 
 def redrawWindow(surface):
     #Will update the window with any changes done within the game
-    global rows, width, s
+    global rows, width, s, food
     surface.fill((0,0,0))
     s.draw(surface)
+    food.draw(surface)
     drawGrid(width, rows, surface)
     pygame.display.update()
 
+def randomFood(rows, snake):
+    positions = snake.body
+    while True:
+        x = random.randrange(rows)
+        y = random.randrange(rows)
+        if len(list(filter(lambda z:z.pos == (x,y), positions))) > 0:
+            #If random food pos is on the snake, run loop again with new randomizations
+            continue
+        else:
+            break
+    return (x,y)
+
 def main():
-    global width, height, rows, s
+    global width, height, rows, s, food
     width = 700
     height = 700
     rows = 25
@@ -150,6 +164,9 @@ def main():
 
     #Creating a snake object
     s = snake((0,255,0), (10,10))
+
+    #Creating a food item
+    food = cube(randomFood(rows, s), color=(0,255,0))
 
     flag = True
 
@@ -161,6 +178,11 @@ def main():
         pygame.time.delay(50)
         clock.tick(10)
         s.move()
+
+        if s.body[0].pos == food.pos:
+            s.addCube()
+            food = cube(randomFood(rows, s), color=(0,255,0))
+
         redrawWindow(window)
 
 main()
