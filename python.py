@@ -79,13 +79,14 @@ class snake(object):
 
     def addCube(self):
         tail = self.body[-1]
-        dx, dy = tail.dirnx, tail.dirny
+        dx = tail.dirnx
+        dy = tail.dirny
 
         #Depending on movement of snake, we need to add cube on the correct side
-        if dx == 1 and dy == 0:
+        if (dx == 1) and (dy == 0):
             self.body.append(cube((tail.pos[0]-1,tail.pos[1])))
         elif dx == -1 and dy == 0:
-            self.body.append(cube((tail.pos[0]+1),tail.pos[1]))
+            self.body.append(cube((tail.pos[0]+1,tail.pos[1])))
         elif dx == 0 and dy == 1:
             self.body.append(cube((tail.pos[0],tail.pos[1]-1)))
         elif dx == 0 and dy == -1:
@@ -194,8 +195,7 @@ def main():
         s.move()
 
         if s.body[0].pos == food.pos:
-            #Bug isolated to addCube function!
-            #s.addCube()
+            s.addCube()
             food = cube(randomFood(rows, s), color=(0,255,0))
 
         redrawWindow(window)
