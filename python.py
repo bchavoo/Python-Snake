@@ -11,6 +11,8 @@
 '''
 import pygame
 import random
+import tkinter as tk
+from tkinter import messagebox
 
 class snake(object):
     body = []
@@ -25,7 +27,8 @@ class snake(object):
     def move(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                exit()
+
 
             #Keep updating keyboard input
             keys = pygame.key.get_pressed()
@@ -74,8 +77,14 @@ class snake(object):
                 else:
                     cube.move(cube.dirnx,cube.dirny)
 
+
     def reset(self, pos):
-        pass
+        self.head = cube(pos)
+        self.body = []
+        self.body.append(self.head)
+        self.turns = {}
+        self.dirnx = 0
+        self.dirny = 1
 
     def addCube(self):
         tail = self.body[-1]
@@ -92,6 +101,7 @@ class snake(object):
         elif dx == 0 and dy == -1:
             self.body.append(cube((tail.pos[0],tail.pos[1]+1)))
 
+        #Set the tail direction to the direction of the snake
         self.body[-1].dirnx = dx
         self.body[-1].dirny = dy
 
@@ -168,6 +178,16 @@ def randomFood(rows, snake):
             break
     return (x,y)
 
+def message_box(subject, content):
+    root = tk.Tk()
+    root.attributes("-topmost", True)
+    root.withdraw()
+    messagebox.showinfo(subject, content)
+    try:
+        root.destroy()
+    except:
+        pass
+
 def main():
     global width, height, rows, s, food
     width = 700
@@ -197,6 +217,13 @@ def main():
         if s.body[0].pos == food.pos:
             s.addCube()
             food = cube(randomFood(rows, s), color=(0,255,0))
+
+        for x in range(len(s.body)):
+            if s.body[x].pos in list(map(lambda y:y.pos,s.body[x+1:])):
+                print('Score: ', len(s.body))
+                #message_box('You lost!', 'Play again!')
+                s.reset((10,10))
+                break
 
         redrawWindow(window)
 
